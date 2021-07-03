@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="en">
+
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400&amp;display=swap" rel="stylesheet">
+    <link rel="stylesheet"
+        href="fonts%2c_icomoon%2c_style.css%2bcss%2c_owl.carousel.min.css%2bcss%2c_bootstrap.min.css%2bcss%2c_style.css.pagespeed.cc.WuwWHFx2BT.css" />
+
+    <!-- Google charts link -->
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
+    <script type="text/javascript">
+        google.charts.load('current', { 'packages': ['corechart'] });
+        google.charts.setOnLoadCallback(drawChart);
+
+        function drawChart(data = [
+            ['X', 'Y'],
+            [8, 12],
+            [4, 5.5],
+            [11, 14],
+            [4, 5],
+            [3, 3.5],
+            [6.5, 7]
+        ], coo_coeffiecient = 0.5) {
+            var data = google.visualization.arrayToDataTable(data);
+
+            var options = {
+                title: 'Correlation Coefficient between X and Y Data is ' + coo_coeffiecient,
+                hAxis: { title: 'X Data', minValue: 0, maxValue: 15 },
+                vAxis: { title: 'Y Data', minValue: 0, maxValue: 15 },
+                legend: 'none',
+                width: 550,
+                height: 400,
+                trendlines: { 0: {}, 1: {} }
+            };
+
+            var chart = new google.visualization.ScatterChart(document.getElementById('chart_div'));
+
+            chart.draw(data, options);
+        }
+    </script>
+
+    <title>Correlation Coefficient Calculator</title>
+</head>
+
+<body>
+    <div class="content">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 order-md-2">
+                    <!-- <img src="images/undraw_file_sync_ot38.svg" alt="Image" class="img-fluid"> -->
+                    <div id="chart_div"></div>
+                </div>
+                <div class="col-md-6 contents">
+                    <div class="row justify-content-center">
+                        <div class="col-md-8">
+                            <div class="mb-4">
+                                <h3>Enter Data to calulate <strong>Correlation Coefficient</strong></h3>
+                                <p class="mb-4">Use Comma Seperated Values for x and y data</p>
+                            </div>
+                            <form action="" id="FormData" method="post">
+                                <div class="form-group first">
+                                    <label for="username">X Data</label>
+                                    <input type="text" name="x" class="form-control" id="x_input"
+                                        pattern="^[1-9]\d*(,\d+)*$">
+                                </div>
+                                <div class="form-group last mb-4">
+                                    <label for="password">Y Data</label>
+                                    <input type="text" name="y" class="form-control" id="y_input"
+                                        pattern="^[1-9]\d*(,\d+)*$">
+                                </div>
+
+                                <input type="submit" value="Calculate" class="btn text-white btn-block btn-primary">
+                                <!-- <span class="d-block text-left my-4 text-muted"> or sign in with</span> -->
+                                <!-- <div class="social-login">
+                                    <a href="#" class="facebook">
+                                        <span class="icon-facebook mr-3"></span>
+                                    </a>
+                                    <a href="#" class="twitter">
+                                        <span class="icon-twitter mr-3"></span>
+                                    </a>
+                                    <a href="#" class="google">
+                                        <span class="icon-google mr-3"></span>
+                                    </a>
+                                </div> -->
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="js/jquery-3.3.1.min.js"></script>
+
+    <script>
+
+        $('#FormData').submit(function (e) {
+            e.preventDefault();
+            const data = $(this).serializeArray()
+            // console.log(data)
+            if (data[0].value == "" || data[1].value == "") {
+                alert("please enter some data")
+            } else {
+                let x_string = data[0].value
+                let y_string = data[1].value
+                let x_array = x_string.split(',')
+                let y_array = y_string.split(',')
+
+                if (x_array.length != y_array.length) {
+                    alert("please enter same no of x and y data")
+                } else {
+                    x_array = x_array.map(Number)
+                    y_array = y_array.map(Number)
+                    // console.log(x_array)
+                    // console.log(y_array)
+                    let data_graph = [['X', 'Y']]
+
+                    let xy = []
+                    let x_square = []
+                    let y_square = []
+
+                    let sum_x = 0
+                    let sum_y = 0
+                    let sum_xy = 0
+                    let sum_x_square = 0
+                    let sum_y_square = 0
+
+                    for (let index = 0; index < x_array.length; index++) {
+                        xy.push(x_array[index] * y_array[index])
+                        sum_xy += (x_array[index] * y_array[index])
+
+                        x_square.push(Math.pow(x_array[index]), 2)
+                        y_square.push(Math.pow(y_array[index]), 2)
+
+                        sum_x_square += Math.pow(x_array[index], 2)
+                        sum_y_square += Math.pow(y_array[index], 2)
+
+                        sum_x += x_array[index]
+                        sum_y += y_array[index]
+                        let z = []
+                        z.push(x_array[index])
+                        z.push(y_array[index])
+                        data_graph.push(z)
+                    }
+
+                    let n = x_array.length
+
+                    const r = ((n * sum_xy) - (sum_x * sum_y)) / Math.sqrt(((n * sum_x_square) - Math.pow(sum_x, 2)) * ((n * sum_y_square) - Math.pow(sum_y, 2)))
+
+                    // console.log(xy)
+                    // console.log(x_square)
+                    // console.log(y_square)
+
+
+                    // console.log(sum_x)
+                    // console.log(sum_y)
+                    // console.log(sum_xy)
+                    // console.log(sum_x_square)
+                    // console.log(sum_y_square)
+                    // console.log(n)
+                    // console.log(r)
+                    drawChart(data_graph, r)
+                }
+                // console.log(x_array)
+            }
+
+        })
+
+    </script>
+
+    <script src="js/popper.min.js%2bbootstrap.min.js%2bmain.js.pagespeed.jc.AM7zHOnWML.js"></script>
+    <script>eval(mod_pagespeed_VdtoRqoRj6);</script>
+    <script>eval(mod_pagespeed_buaBZmHuVG);</script>
+    <script>eval(mod_pagespeed__iE4DxA2EC);</script>
+    <!-- <script defer src="../../../../static.cloudflareinsights.com/beacon.min.js"
+        data-cf-beacon='{"rayId":"668f227709d1d94a","token":"cd0b4b3a733644fc843ef0b185f98241","version":"2021.6.0","si":10}'></script> -->
+</body>
+
+</html>
